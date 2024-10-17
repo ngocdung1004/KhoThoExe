@@ -3,17 +3,40 @@ using KhoThoExe.DTOs;
 using KhoThoExe.Interfaces;
 using KhoThoExe.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KhoThoExe.Services
 {
     public class UserService : IUserService
     {
         private readonly KhoThoContext _context;
+        private readonly ITokenService _tokenService;
 
-        public UserService(KhoThoContext context)
+        public UserService(KhoThoContext context, ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
+
+        public async Task<string> AuthenticateAsync(LoginDto loginDto)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u =>
+                (u.Email == loginDto.LoginIdentifier || u.PhoneNumber == loginDto.LoginIdentifier) &&
+                u.PasswordHash == loginDto.Password);
+
+            if (user == null || string.IsNullOrEmpty(user.Email) || user.UserType == null)
+            {
+                throw new ArgumentNullException("User information is incomplete.");
+            }
+
+            // Chuyển đổi UserType thành chuỗi (ví dụ: user.UserType.ToString() nếu là enum)
+            string userTypeString = user.UserType.ToString();
+
+            return _tokenService.GenerateToken(user.UserID, user.Email, userTypeString);
+        }
+
+
+
 
         public async Task<UserDto> CreateUserAsync(UserDto userDto)
         {

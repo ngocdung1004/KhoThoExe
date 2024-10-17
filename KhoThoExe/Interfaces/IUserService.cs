@@ -9,5 +9,6 @@ namespace KhoThoExe.Interfaces
         Task<UserDto> CreateUserAsync(UserDto userDto);
         Task<UserDto> UpdateUserAsync(int userId, UserDto userDto);
         Task<bool> DeleteUserAsync(int userId);
+        Task<string> AuthenticateAsync(LoginDto loginDto);
     }
 }
