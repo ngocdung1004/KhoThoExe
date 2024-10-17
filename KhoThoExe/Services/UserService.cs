@@ -54,7 +54,7 @@ namespace KhoThoExe.Services
                 Email = u.Email,
                 PhoneNumber = u.PhoneNumber,
                 Address = u.Address,
-                UserType = u.UserType,
+                UserType = (UserType)u.UserType,
                 ProfilePicture = u.ProfilePicture,
                 CreatedAt = u.CreatedAt
             }).ToListAsync();

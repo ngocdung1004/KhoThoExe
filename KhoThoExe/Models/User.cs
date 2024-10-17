@@ -1,7 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace KhoThoExe.Models
 {
+    public enum UserType
+    {
+        Admin,
+        Customer,
+        Worker
+    }
+
     public class User
     {
         public int UserID { get; set; }
@@ -18,7 +26,9 @@ namespace KhoThoExe.Models
 
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
-        public string UserType { get; set; } = "Customer"; // 'Customer', 'Worker'
+
+        // Sử dụng UserType thay vì string
+        public UserType UserType { get; set; }
         public string ProfilePicture { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

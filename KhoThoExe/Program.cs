@@ -31,8 +31,8 @@ namespace KhoThoExe
             builder.Services.AddScoped<IWorkerService, WorkerService>();
             builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
-            //builder.Services.AddScoped<IPaymentService, PaymentService>();
-            //builder.Services.AddScoped<IJobTypeService, JobTypeService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IJobTypeService, JobTypeService>();
             builder.Services.AddScoped<IWorkerJobTypeService, WorkerJobTypeService>();
 
             var app = builder.Build();
