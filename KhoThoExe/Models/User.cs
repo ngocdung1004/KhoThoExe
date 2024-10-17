@@ -18,7 +18,7 @@ namespace KhoThoExe.Models
 
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
-        public string UserType { get; set; } // 'Customer', 'Worker'
+        public string UserType { get; set; } = "Customer"; // 'Customer', 'Worker'
         public string ProfilePicture { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

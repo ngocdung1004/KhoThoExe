@@ -1,5 +1,8 @@
 
 using KhoThoExe.Data;
+using KhoThoExe.Helpers;
+using KhoThoExe.Interfaces;
+using KhoThoExe.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace KhoThoExe
@@ -20,8 +23,18 @@ namespace KhoThoExe
             builder.Services.AddDbContext<KhoThoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddControllers();
-                
+
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+            // Thêm các dịch vụ vào DI container
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IWorkerService, WorkerService>();
+            builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+            //builder.Services.AddScoped<IPaymentService, PaymentService>();
+            //builder.Services.AddScoped<IJobTypeService, JobTypeService>();
+            builder.Services.AddScoped<IWorkerJobTypeService, WorkerJobTypeService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

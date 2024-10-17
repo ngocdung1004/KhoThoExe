@@ -1,4 +1,6 @@
 ﻿using KhoThoExe.Data;
+using KhoThoExe.DTOs;
+using KhoThoExe.Interfaces;
 using KhoThoExe.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,89 +12,48 @@ namespace KhoThoExe.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly KhoThoContext _context;
-        public UsersController(KhoThoContext context)
+        private readonly IUserService _userService;
+
+        public UsersController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
-        // GET: api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
         }
 
-        // GET: api/users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
+            return Ok(user);
         }
 
-        // POST: api/users
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult> CreateUser(UserDto userDto)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserID }, user);
+            await _userService.CreateUserAsync(userDto);
+            return CreatedAtAction(nameof(GetUserById), new { id = userDto.UserID }, userDto);
         }
 
-        // PUT: api/users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<ActionResult> UpdateUser(int id, UserDto userDto)
         {
-            if (id != user.UserID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
-
+            if (id != userDto.UserID) return BadRequest();
+            await _userService.UpdateUserAsync(id, userDto);
             return NoContent();
         }
 
-        // DELETE: api/users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
+            await _userService.DeleteUserAsync(id);
             return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.UserID == id);
         }
     }
 }
